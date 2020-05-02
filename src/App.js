@@ -37,13 +37,26 @@ function App() {
     }
   }
 
+  async function handleLikeRepository(id) {
+    const response = await api.post(`repositories/${id}/like`);
+    if (response.status === 200) {
+      const repositoryIndex = repositories.findIndex(repository => repository.id === response.data.id);
+      const repositoriesCopy = [...repositories];
+      repositoriesCopy[repositoryIndex] = response.data;
+      setRepositories(repositoriesCopy);
+    } else {
+      console.error(response);
+    }
+  }
+
   return (
     <div>
       <ul data-testid="repository-list">
         {repositories.map((repository) => (
           <li key={repository.id}>
-            {repository.title}
+            {repository.title} | likes: {repository.likes}
             <button onClick={() => handleRemoveRepository(repository.id)}>Remover</button>
+            <button onClick={() => handleLikeRepository(repository.id)}>Like</button>
           </li>
         ))}
       </ul>
